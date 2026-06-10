@@ -1,6 +1,10 @@
 import pytest
 from books import add_book, mark_as_read, list_books, delete_book, filter_books_by_read_status, clear_books
 
+@pytest.fixture(autouse=True)
+def reset_books():
+    clear_books()
+
 def test_add_book():
     assert add_book("Foundation") == "Book 'Foundation' added with read status 'Unread'."
     assert add_book("Dune") == "Book 'Dune' added with read status 'Unread'."
@@ -16,9 +20,10 @@ def test_mark_as_read():
         mark_as_read("Nonexistent Book")
 
 def test_list_books():
-    add_book("Foundation")
-    add_book("Dune")
-    list_books()
+    assert list_books() == [
+    {"book name": "Foundation", "read status": False},
+    {"book name": "Dune", "read status": False}
+]
 
 def test_delete_book():
     add_book("Foundation")
